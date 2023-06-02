@@ -1,8 +1,7 @@
 import mlflow
 from sklearn.ensemble import RandomForestClassifier
 
-mlflow.set_tracking_uri('http://localhost:5000')
-
+mlflow.set_tracking_uri("localhost:5001")
 mlflow.set_experiment("MINIO_Default")
 
 params = {"max_depth": 5, "n_estimators": 10}
