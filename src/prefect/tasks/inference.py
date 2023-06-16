@@ -32,7 +32,7 @@ def load_model_task(model_name: str) -> Pipeline:
 
     model = mlflow.sklearn.load_model(f"models:/{model_name}/Production")
 
-    logger.info(f"Done Load Model.")
+    logger.info("Done Load Model.")
 
     return model
 
@@ -46,7 +46,7 @@ def batch_inference_task(
 
     results = pd.read_csv("submission.csv")
     results["transaction_real_price"] = model.predict(data)
-    results["predict_date"] = datetime.today().date()
+    results["predict_date"] = datetime.now().date()
 
     logger.info("Batch Inference Done")
     return results
@@ -54,8 +54,8 @@ def batch_inference_task(
 
 @task(log_stdout=True)
 def save_database(results: List[pd.DataFrame]) -> None:
-    logger.info(f"Save to db Start")
+    logger.info("Save to db Start")
 
     save_prediction(results)
 
-    logger.info(f"Save Result Done")
+    logger.info("Save Result Done")

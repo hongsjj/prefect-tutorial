@@ -21,15 +21,16 @@ def get_prep_pipeline(data: pd.DataFrame):
     num_columns = data.select_dtypes(exclude=[object]).columns.values
     cat_columns = data.select_dtypes(include=[object]).columns.values
 
-    # 전처리 파이프라인
-    preprocessor = ColumnTransformer(
+    return ColumnTransformer(
         transformers=[
             ("num", StandardScaler(), num_columns),
-            ("cat", OneHotEncoder(handle_unknown="ignore", sparse=False), cat_columns),
+            (
+                "cat",
+                OneHotEncoder(handle_unknown="ignore", sparse=False),
+                cat_columns,
+            ),
         ]
     )
-
-    return preprocessor
 
 
 @task(log_prints=True)
@@ -136,11 +137,9 @@ def train_task(
         verbose=None,
     )
 
-    logger.info(f"Training End")
+    logger.info("Training End")
 
-    pipeline = Pipeline(steps=[("preprocessor", prep_pipeline), ("model", model)])
-
-    return pipeline
+    return Pipeline(steps=[("preprocessor", prep_pipeline), ("model", model)])
 
 
 @task(log_prints=True)
@@ -188,7 +187,7 @@ def create_model_version(
         model_name, model_source, run_id, description=f"{eval_metric}: {current_metric}"
     )
 
-    logger.info(f"Done Create model version")
+    logger.info("Done Create model version")
     return model_version.version
 
 
